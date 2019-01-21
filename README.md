@@ -1,4 +1,4 @@
-# Taller Docker: Desarrollando entre conteneores
+# Taller Docker: Desarrollando entre contenedores
 
 ## Instalación docker CE
 
