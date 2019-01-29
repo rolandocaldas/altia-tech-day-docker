@@ -1,0 +1,35 @@
+version: "3.5"
+services:
+  php-fpm:
+    image: rolandocaldas/marvel-api
+    environment:
+      - DATABASE_URL=mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@mysql:3306/${MYSQL_DATABASE}
+    depends_on:
+      - mysql
+  marvel-api:
+    image: nginx:alpine
+    container_name: marvel-api
+    ports:
+      - "8080:80"
+    depends_on:
+      - php-fpm
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+  mysql:
+    build:
+      context: .
+      dockerfile: mysql/Dockerfile
+      args:
+        - LOCAL_UID=${LOCAL_UID}
+        - LOCAL_GID=${LOCAL_GID}
+    volumes:
+      - "./database:/var/lib/mysql"
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+  angular:
+    image: rolandocaldas/marvel-client
+    ports:
+      - "4200:4200"
